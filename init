@@ -1,0 +1,39 @@
+#!/bin/sh
+
+exec /bin/sh
+
+# Mount necessary filesystems
+mount -t proc proc /proc
+mount -t sysfs sys /sys
+mount -t devtmpfs dev /dev
+
+# Display available devices for debugging
+echo "Available devices:"
+ls /dev
+
+# Check if the main partition already exists
+if blkid /dev/sda1; then
+    echo "Partition /dev/sda1 already exists. Mounting it."
+else
+    echo "Partition /dev/sda1 does not exist. Creating and formatting partition."
+    parted /dev/sda --script mklabel msdos
+    parted /dev/sda --script mkpart primary ext4 0% 100%
+    mkfs.ext4 /dev/sda1
+fi
+
+# Mount the main partition
+mount -t ext4 /dev/sda1 /mnt
+if [ $? -ne 0 ]; then
+    echo "Error mounting the filesystem. Starting a shell for debugging."
+    exec /bin/sh
+fi
+
+# Check if /sbin/init exists in the new root filesystem
+if [ ! -f /mnt/sbin/init ]; then
+    echo "/sbin/init does not exist in the new root filesystem. Starting a shell for debugging."
+    exec /bin/sh
+fi
+
+# Switch the root and start init
+exec switch_root /mnt /bin/sh
+
