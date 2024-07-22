@@ -56,5 +56,6 @@ ln -s busybox switch_root
 cd ..
 #cd "$INITRAMFS_DIR/usr/bin" || exit 1
 ./busybox --install -s
-cd - || exit 1
+#cd - || exit 1
 
+find . -print0 | cpio --null -ov --format=newc > ../custom_bed.img
