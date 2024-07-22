@@ -1,7 +1,13 @@
 #!/bin/bash
 
-# Definirea directorului INITRAMFS
-INITRAMFS_DIR="initramfs"
+# Check if the correct number of parameters was passed
+if [[ $# -ne 2 ]]; then
+    echo "Usage: $0 <KERNEL_DIR> <INITRAMFS_IMG_NAME>"
+    exit 1
+fi
+
+INITRAMFS_DIR="$1"
+INITRAMFS_IMG_NAME="$2"
 
 # Crearea structurii de directoare
 mkdir -p "$INITRAMFS_DIR"/{sbin,etc,mnt,proc,run,sys,usr/{bin,sbin,lib64,lib/x86_64-linux-gnu},var}
@@ -58,4 +64,7 @@ cd ..
 ./busybox --install -s
 #cd - || exit 1
 
-find . -print0 | cpio --null -ov --format=newc > ../custom_bed.img
+
+find . -print0 | cpio --null -ov --format=newc > "../$INITRAMFS_IMG_NAME"
+
+exit 0
