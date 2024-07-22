@@ -47,8 +47,8 @@ fi
 # Configure and build the kernel
 cd $KERNEL_DIR
 echo "Configuring and building the kernel..."
-make defconfig
-make -j$(nproc)
+#make defconfig
+#make -j$(nproc)
 cd ..
 
 # Copy the compiled kernel
@@ -63,9 +63,9 @@ qemu-img create -f qcow2 $DISK_IMAGE 1G
 
 # Start QEMU with the specified kernel and initramfs
 #qemu-system-x86_64 -kernel $KERNEL_DIR/arch/x86_64/boot/bzImage  -initrd "custom_bed.img" -append "console=ttyS0 init=/init" -hda $DISK_IMAGE -m 512M -nographic -drive file=$DISK_IMAGE,if=none,id=drive0 -device ahci,id=ahci -device ide-drive,drive=drive0,bus=ahci.0
-qemu-system-x86_64 -kernel $KERNEL_DIR/arch/x86_64/boot/bzImage  -initrd "custom_bed.img" -append "console=ttyS0 init=/init" --hda $DISK_IMAGE -m 512M -nographic
+qemu-system-x86_64 -kernel $KERNEL_DIR/arch/x86_64/boot/bzImage  -initrd "custom_bed.img" -append "console=ttyS0 init=/init noapic" --hda $DISK_IMAGE -m 512M -nographic 
 
 
 #-drive file=disk.qcow2,if=none,id=drive0 -device ahci,id=ahci -device ide-drive,drive=drive0,bus=ahci.0
-#qemu-system-x86_64 -kernel $KERNEL_DIR/arch/x86_64/boot/bzImage -initrd "initramfs.img" -append "console=ttyS0 init=/init"  -m 512M -nographic
+#qemu-system-x86_64 -kernel $KERNEL_DIR/arch/x86_64/boot/bzImage -initrd "initramfs.img" -append "console=ttyS0 init=/init noapic"  -m 512M -nographic
 #qemu-system-x86_64 -kernel $KERNEL_DIR/arch/x86_64/boot/bzImage -initrd "$DIR/initramfs-linux.img" -append "console=ttyS0 init=/init"  -m 512M -nographic
