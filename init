@@ -2,7 +2,6 @@
 
 echo "Hello World"
 
-
 # Mount necessary filesystems
 mount -t devtmpfs dev /dev
 
@@ -24,7 +23,6 @@ fi
 # Copy all files from the current root filesystem to the new root filesystem
 echo "Copying current root filesystem to new permanent partition..."
 cp -a / /mnt
-
 
 # Check if /sbin/init exists in the new root filesystem
 if [ ! -f /mnt/sbin/init ]; then
@@ -51,5 +49,7 @@ echo "Current PID: $$"
 # Switch the root to /mnt/ and start init
 switch_root /mnt /sbin/init
 
+echo ""
 echo "Hello World. Permanent fs finish loaded!"
 /bin/sh
+exec switch_root /mnt /sbin/init
